@@ -1,25 +1,46 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import CardContainer from "../global/card-container";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDownIcon, File, Youtube } from "lucide-react";
 
-export function SearchBar() {
+export function MainComponent() {
   const [value, setValue] = useState("");
-  const [googleSearchResults, setGoogleSearchResults] = useState([]);
+  const [googleSearchResults, setGoogleSearchResults] = useState<{
+    items: any[];
+  }>({ items: [] });
+  const [youtubeSearchResults, setYoutubeSearchResults] = useState<{
+    items: any[];
+  }>({ items: [] });
+  const [filters, setFilters] = useState("all");
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await fetch(
+      const googleResponse = await fetch(
         `http://localhost:9000/api/google?query=${value}`
       );
-      const data = await response.json();
-      console.log(data);
-      setGoogleSearchResults(data);
+      const youtubeResponse = await fetch(
+        `http://localhost:9000/api/youtube?query=${value}`
+      );
+      const googleData = await googleResponse.json();
+      const youtubeData = await youtubeResponse.json();
+      setGoogleSearchResults(googleData);
+      setYoutubeSearchResults(youtubeData);
+      console.log(googleSearchResults, youtubeSearchResults);
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
+    <div className="flex flex-col items-center gap-4 justify-center w-full h-full">
       <div className="flex items-center w-full max-w-md bg-background rounded-lg shadow-sm border border-input">
         <form onSubmit={handleSubmit} className="relative flex-1">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -32,7 +53,37 @@ export function SearchBar() {
           />
         </form>
       </div>
-      <div>Card</div>
+      <div>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-2">
+            Filters <ChevronDownIcon />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => setFilters("all")}>
+              All
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => setFilters("google")}
+            >
+              <File className="w-4 h-4 shrink-0" /> Blogs, Articles & News
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => setFilters("youtube")}
+            >
+              <Youtube className="w-4 h-4 shrink-0" /> Videos
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div>
+        <CardContainer
+          googleSearchResults={googleSearchResults}
+          youtubeSearchResults={youtubeSearchResults}
+          filters={filters}
+        />
+      </div>
     </div>
   );
 }
