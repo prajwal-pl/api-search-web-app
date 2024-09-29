@@ -6,11 +6,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDownIcon, File, Youtube } from "lucide-react";
+import { ChevronDownIcon, File, Globe2, Youtube } from "lucide-react";
 
 export function MainComponent() {
   const [value, setValue] = useState("");
@@ -20,6 +18,9 @@ export function MainComponent() {
   const [youtubeSearchResults, setYoutubeSearchResults] = useState<{
     items: any[];
   }>({ items: [] });
+  const [scholarSearchResults, setScholarSearchResults] = useState<{
+    organic_results: any[];
+  }>({ organic_results: [] });
   const [filters, setFilters] = useState("all");
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -30,11 +31,15 @@ export function MainComponent() {
       const youtubeResponse = await fetch(
         `http://localhost:9000/api/youtube?query=${value}`
       );
+      const scholarResponse = await fetch(
+        `http://localhost:9000/api/scholar?query=${value}`
+      );
+      const scholarData = await scholarResponse.json();
       const googleData = await googleResponse.json();
       const youtubeData = await youtubeResponse.json();
+      setScholarSearchResults(scholarData);
       setGoogleSearchResults(googleData);
       setYoutubeSearchResults(youtubeData);
-      console.log(googleSearchResults, youtubeSearchResults);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +58,7 @@ export function MainComponent() {
           />
         </form>
       </div>
-      <div>
+      <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2">
             Filters <ChevronDownIcon />
@@ -66,7 +71,7 @@ export function MainComponent() {
               className="flex items-center gap-2"
               onClick={() => setFilters("google")}
             >
-              <File className="w-4 h-4 shrink-0" /> Blogs, Articles & News
+              <Globe2 className="w-4 h-4 shrink-0" /> Blogs, Articles & News
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex items-center gap-2"
@@ -74,13 +79,22 @@ export function MainComponent() {
             >
               <Youtube className="w-4 h-4 shrink-0" /> Videos
             </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => setFilters("scholar")}
+            >
+              <File className="w-4 h-4 shrink-0" /> Academic Papers
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <p>{filters}</p>
       </div>
       <div>
         <CardContainer
           googleSearchResults={googleSearchResults}
           youtubeSearchResults={youtubeSearchResults}
+          scholarSearchResults={scholarSearchResults}
           filters={filters}
         />
       </div>

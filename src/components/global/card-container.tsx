@@ -5,12 +5,14 @@ type Props = {
   filters: string;
   googleSearchResults: { items: any[] };
   youtubeSearchResults: { items: any[] };
+  scholarSearchResults: { organic_results: any[] };
 };
 
 const CardContainer = ({
   filters,
   googleSearchResults,
   youtubeSearchResults,
+  scholarSearchResults,
 }: Props) => {
   if (!googleSearchResults.items.length && !youtubeSearchResults.items.length) {
     return (
@@ -29,6 +31,9 @@ const CardContainer = ({
           {youtubeSearchResults.items.map((result) => (
             <ResultsCard filters={filters} result={result} />
           ))}
+          {scholarSearchResults.organic_results.map((result) => (
+            <ResultsCard filters={filters} result={result} />
+          ))}
         </>
       ) : filters === "google" ? (
         <>
@@ -36,9 +41,15 @@ const CardContainer = ({
             <ResultsCard filters={filters} result={result} />
           ))}
         </>
-      ) : (
+      ) : filters === "youtube" ? (
         <>
           {youtubeSearchResults.items.map((result) => (
+            <ResultsCard filters={filters} result={result} />
+          ))}
+        </>
+      ) : (
+        <>
+          {scholarSearchResults.organic_results.map((result) => (
             <ResultsCard filters={filters} result={result} />
           ))}
         </>
