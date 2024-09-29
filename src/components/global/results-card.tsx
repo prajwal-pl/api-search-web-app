@@ -4,23 +4,16 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  CalendarIcon,
-  File,
-  Globe2,
-  GlobeIcon,
-  PaperclipIcon,
-  YoutubeIcon,
-} from "lucide-react";
+import { CalendarIcon, File, GlobeIcon, YoutubeIcon } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
   result: any;
-  filters: string;
 };
 
-export default function ResultsCard({ result, filters }: Props) {
-  const googleimageUrl = result.pagemap?.cse_image?.[0]?.src || "/fallback.jpg";
+export default function ResultsCard({ result }: Props) {
+  const googleimageUrl =
+    result?.pagemap?.cse_image?.[0]?.src || "/fallback.jpg";
   const youtubeimageUrl =
     result.snippet?.thumbnails?.default?.url || "/fallback.jpg";
   return (
@@ -28,10 +21,10 @@ export default function ResultsCard({ result, filters }: Props) {
       <div className="relative">
         <img
           src={
-            result.kind === "customsearch#result"
-              ? googleimageUrl
-              : result.kind === "youtube#searchResult"
-              ? youtubeimageUrl
+            result?.kind === "customsearch#result"
+              ? googleimageUrl || "/fallback.jpg"
+              : result?.kind === "youtube#searchResult"
+              ? youtubeimageUrl || "/fallback.jpg"
               : "/fallback.jpg"
           }
           alt="Blog post thumbnail"
@@ -51,10 +44,10 @@ export default function ResultsCard({ result, filters }: Props) {
         <Link
           href={
             result.kind === "customsearch#result"
-              ? result.link
+              ? result?.link
               : result.kind === "youtube#searchResult"
-              ? `https://www.youtube.com/watch?v=${result.id.videoId}`
-              : result.link
+              ? `https://www.youtube.com/watch?v=${result?.id?.videoId}`
+              : result?.link
           }
           target="_blank"
         >
@@ -69,19 +62,19 @@ export default function ResultsCard({ result, filters }: Props) {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          {result.kind === "customsearch#result"
-            ? result.snippet
-            : result.kind === "youtube#searchResult"
-            ? result.snippet.description
-            : result.snippet}
+          {result?.kind === "customsearch#result"
+            ? result?.snippet
+            : result?.kind === "youtube#searchResult"
+            ? result?.snippet.description
+            : result?.snippet}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <div className="flex items-center text-sm text-muted-foreground">
-          {result.kind === "youtube#searchResult" && (
+          {result?.kind === "youtube#searchResult" && (
             <>
               <CalendarIcon className="mr-1 h-4 w-4" />
-              <span>{result.snippet.publishedAt.split("T")[0]}</span>
+              <span>{result?.snippet?.publishedAt?.split("T")[0]}</span>
             </>
           )}
         </div>

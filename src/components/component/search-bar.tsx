@@ -12,6 +12,7 @@ import { ChevronDownIcon, File, Globe2, Youtube } from "lucide-react";
 
 export function MainComponent() {
   const [value, setValue] = useState("");
+  const [loading, setLoading] = useState(false);
   const [googleSearchResults, setGoogleSearchResults] = useState<{
     items: any[];
   }>({ items: [] });
@@ -24,6 +25,7 @@ export function MainComponent() {
   const [filters, setFilters] = useState("all");
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const googleResponse = await fetch(
         `http://localhost:9000/api/google?query=${value}`
@@ -42,6 +44,8 @@ export function MainComponent() {
       setYoutubeSearchResults(youtubeData);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -96,6 +100,7 @@ export function MainComponent() {
           youtubeSearchResults={youtubeSearchResults}
           scholarSearchResults={scholarSearchResults}
           filters={filters}
+          loading={loading}
         />
       </div>
     </div>
