@@ -28,13 +28,13 @@ export function MainComponent() {
     setLoading(true);
     try {
       const googleResponse = await fetch(
-        `http://localhost:9000/api/google?query=${value}`
+        `https://api-search-web-app-backend-7.onrender.com/api/google?query=${value}`
       );
       const youtubeResponse = await fetch(
-        `http://localhost:9000/api/youtube?query=${value}`
+        `https://api-search-web-app-backend-7.onrender.com/api/youtube?query=${value}`
       );
       const scholarResponse = await fetch(
-        `http://localhost:9000/api/scholar?query=${value}`
+        `https://api-search-web-app-backend-7.onrender.com/api/scholar?query=${value}`
       );
       const scholarData = await scholarResponse.json();
       const googleData = await googleResponse.json();
